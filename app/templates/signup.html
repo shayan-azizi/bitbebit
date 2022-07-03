@@ -57,6 +57,7 @@
                       <div class="form-outline mb-4">
                         <input type="email" id="form3Example3" class="form-control" name="email" />
                         <label class="form-label" for="form3Example3">آدرس ایمیل</label>{% if email_err %} <p>ایمیل مشکل دارد.</p> {% endif %}
+                                                                                        {% if email_rep_error %} <p>ایمیل تکراری است</p> {% endif %}
                       </div>
       
                       <div class="row">
@@ -66,7 +67,7 @@
                       </div>
                       <div class="col-6 form-outline mb-4">
                         <input type="password" id="form3Example4" class="form-control" name="password2"/>
-                        <label class="form-label" for="form3Example4">تکرار رمز</label> {% if password_err %}رمز شما با همخوانی ندارد.{% endif %}
+                        <label class="form-label" for="form3Example4">تکرار رمز</label> {% if password_error %}رمز شما با همخوانی ندارد.{% endif %}
                       </div>
                     </div>
       
