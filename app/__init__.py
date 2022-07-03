@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db , csrf , mail
+from app.extensions import db , csrf
 from app.views import views
 from app.auth import auth
 from dotenv import load_dotenv
@@ -18,7 +18,6 @@ def create_app():
 
     db.init_app(app=app)
     csrf.init_app(app=app)
-    mail.init_app(app = app)
 
     with app.app_context():
         db.create_all()    

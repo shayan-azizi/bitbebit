@@ -5,22 +5,38 @@ from flask import (
     render_template,
     session,
     request,
-    url_for
+    url_for,
+    current_app
 )
-
+from datetime import timedelta
 from validate_email import validate_email
+import smtplib
 from app.auth_models import User
 from app.extensions import db
 from .utils import generate_random_token
-
+from dotenv import load_dotenv
+import os
 import threading
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
+
+load_dotenv()
+
+
+def send_email(to):
+
+    gmail_server = smtplib.SMTP("smtp.gmail.com" , 587) 
+    gmail_server.starttls()
+    gmail_server.login(user=os.getenv("GMAIL_ADDRESS"),password=os.getenv("GMAIL_PASSWORD"))
+    gmail_server.sendmail(from_addr=os.getenv("GMAIL_ADDRESS"),to_addrs=to,msg="hi!")
+
+
 
 @auth.route("/signup" , methods = ["GET" , "POST"])
 def signup():
 
     if request.method == "POST":
+        session.clear()
         context = {}
 
         username = request.form.get("username" , False)
@@ -50,7 +66,7 @@ def signup():
                 context["user_error"] = True
         
         if context == {}:
-        
+            
             session["user_info_email_verif"] = {
                 "username" : username,
                 "password1" : password1,
@@ -59,13 +75,13 @@ def signup():
                 "lname" : lname,
                 "token" : generate_random_token()
             }
+
+            threading.Thread(target=send_email , args=(email,)).start()
             
-
             flash("ایمیل فرستادیم برات داوپش گل")
-
             return redirect("/email_verification")
-        session.clear()
         return render_template("signup.html" , **context)
+
     if request.method == "GET":
         return render_template("signup.html")
 
@@ -96,17 +112,16 @@ def logout():
     return redirect("/")
 
 @auth.route("/email_verification" , methods = ["GET" , "POST"])
-def email_verification():
+def email_verification(): #TODO : actually write shit here
     if session.get("user_info_email_verif" , False):
         if request.method == "POST":
             pass
 
         elif request.method == "GET":
             pass
-    return redirect(url_for("signup"))
+    return redirect(url_for("auth.signup"))
 
-
-
-
-
-
+    
+@auth.route("/test")
+def test():
+    return f"{session.items()}" ,200
