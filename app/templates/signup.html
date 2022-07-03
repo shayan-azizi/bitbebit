@@ -35,7 +35,7 @@
 
                       <div class="form-outline mb-4">
                         <input type="text" id="form3Example3" class="form-control" name="username" />
-                        <label class="form-label" for="form3Example3">نام کاربری</label>
+                        <label class="form-label" for="form3Example3">نام کاربری</label> {% if user_error %} <p>نام کاربری تکراری است.</p> {% endif %}
                       </div>
 
                       <div class="row">
@@ -48,14 +48,14 @@
                         <div class="col-md-6 mb-4">
                           <div class="form-outline">
                             <input type="text" id="form3Example2" class="form-control"  name="last_name" />
-                            <label class="form-label" for="form3Example2">نام خانوادگی</label> {% if user_error %} {% endif %}
+                            <label class="form-label" for="form3Example2">نام خانوادگی</label> 
                           </div>
                         </div>
                       </div>
       
                       <div class="form-outline mb-4">
                         <input type="email" id="form3Example3" class="form-control" name="email" />
-                        <label class="form-label" for="form3Example3">آدرس ایمیل</label>{% if email_err %}INJA HTML BENEVIS{% endif %}
+                        <label class="form-label" for="form3Example3">آدرس ایمیل</label>{% if email_err %} <p></p> {% endif %}
                       </div>
       
                       <div class="row">
