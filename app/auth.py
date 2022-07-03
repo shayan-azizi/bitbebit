@@ -5,10 +5,15 @@ from flask import (
     render_template,
     session,
     request,
+    url_for
 )
+
 from validate_email import validate_email
 from app.auth_models import User
 from app.extensions import db
+from utils import generate_random_token
+
+import threading
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
@@ -46,14 +51,20 @@ def signup():
         
         if context == {}:
         
-            user = User(username , password1, email , fname if fname else "" , lname if lname else "")
+            session["user_info_email_verif"] = {
+                "username" : username,
+                "password1" : password1,
+                "email" : email,
+                "fname" : fname,
+                "lname" : lname,
+                "token" : generate_random_token()
+            }
+            
 
-            db.session.add(user)
-            db.session.commit()
+            flash("ایمیل فرستادیم برات داوپش گل")
 
-            session.clear()
-            session["user_id"] = user._id
-            return redirect("/")
+            return redirect("/email_verification")
+        session.clear()
         return render_template("signup.html" , **context)
     if request.method == "GET":
         return render_template("signup.html")
@@ -83,3 +94,19 @@ def login():
 def logout():
     session.clear()
     return redirect("/")
+
+@auth.route("/email_verification" , methods = ["GET" , "POST"])
+def email_verification():
+    if session.get("user_info_email_verif" , False):
+        if request.method == "POST":
+            pass
+
+        elif request.method == "GET":
+            pass
+    return redirect(url_for("signup"))
+
+
+
+
+
+
