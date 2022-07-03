@@ -1,7 +1,16 @@
 .signup-icons {
     font-size: 25px;
+    transition: all 1s linear;
 }
 
 .signup-icons :hover {
     transform: scale(1.2);
+}
+.btn-trans{
+    transition: all 0.5s linear;
+
+}
+.btn-trans:hover{
+    padding-left: 15px;
+    padding-right: 15px;
 }
