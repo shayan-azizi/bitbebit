@@ -63,7 +63,7 @@ def login():
         username = request.form.get("username" , False)
         password = request.form.get("password" , False)
 
-        user = User.query.filter_by(username = "username").first()
+        user = User.query.filter_by(username = username).first()
         if user and user.password  == password:
             session["user_id"] = user._id
             return redirect("/")
