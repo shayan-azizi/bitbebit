@@ -30,6 +30,8 @@ def signup():
                 context["email_err"] = True
             elif User.query.filter_by(email = email).first():
                 context["email_rep_error"] = True
+        else:
+            context["email_err"] = True
         if len(password1) < 8:
             context["weak_password"] = True
         elif password1 != password2:
