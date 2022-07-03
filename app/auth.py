@@ -11,7 +11,7 @@ from flask import (
 from validate_email import validate_email
 from app.auth_models import User
 from app.extensions import db
-from utils import generate_random_token
+from .utils import generate_random_token
 
 import threading
 

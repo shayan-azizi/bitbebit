@@ -1,6 +1,7 @@
 Flask==2.1.2
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.1
-validate_email
 Flask-Mail==0.9.1
+validate_email
 passlib==1.7.4
+python-dotenv==0.20.0

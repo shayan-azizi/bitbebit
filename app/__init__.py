@@ -2,12 +2,14 @@ from flask import Flask
 from app.extensions import db , csrf , mail
 from app.views import views
 from app.auth import auth
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 def create_app():
     global db
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "asdsada"
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
