@@ -28,13 +28,14 @@ def signup():
         if request.form.get("email" , False):
             if not validate_email(request.form.get("email")):
                 context["email_err"] = True
-        if len(password1) < 10:
+        if len(password1) < 8:
             context["weak_password"] = True
         elif password1 != password2:
             context["password_error"] = True
         if len(username) > 50:
             context["username_err"] = True
-        
+        elif len(username) == 0:
+            context["username_empty_error"] = True        
         else:
             if User.query.filter_by(username = username).first():
                 context["user_error"] = True
