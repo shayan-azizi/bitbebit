@@ -40,14 +40,18 @@
       
 
                       <div class="form-outline mb-4">
-                        <input type="password" id="form3Example4" class="form-control" name="password1" />
+                        <input type="password" id="form3Example4" class="form-control" name="password" />
                         <label class="form-label" for="form3Example4">رمز</label> 
                       </div>
 
                       <div class="text-center text-danger">
+                        {% with messages = get_flashed_messages() %}
+                          {% if messages %}
                         <p>
                             اطلاعات شما صحت ندارد.
                         </p>
+                            {% endif %}
+                          {% endwith %}
                       </div>
 
       

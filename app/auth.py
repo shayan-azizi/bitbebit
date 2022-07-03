@@ -60,7 +60,7 @@ def signup():
 
 
 
-@auth.route("/login")
+@auth.route("/login" , methods = ["GET" , "POST"])
 def login():
     
     if request.method == "POST":
@@ -77,3 +77,9 @@ def login():
 
     if request.method == "GET":
         return render_template("login.html")
+
+
+@auth.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
