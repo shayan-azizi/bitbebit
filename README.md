@@ -1,2 +1,8 @@
 # bitbebit
-Persion forum for programming
+Persian forum for programming
+
+contributors:
+
+    Bardia Amirian
+    Shayan Azizi
+    Yasin Talebian
