@@ -1,0 +1,7 @@
+.signup-icons {
+    font-size: 25px;
+}
+
+.signup-icons :hover {
+    transform: scale(1.2);
+}
