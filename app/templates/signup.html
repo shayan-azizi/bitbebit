@@ -35,7 +35,7 @@
 
                       <div class="form-outline mb-4">
                         <input type="text" id="form3Example3" class="form-control" name="username" />
-                        <label class="form-label" for="form3Example3">نام کاربری</label>
+                        <label class="form-label" for="form3Example3">نام کاربری</label> {% if user_error %} <p>نام کاربری تکراری است.</p> {% endif %}{% if username_empty_error %}نام کاربری خالی است. {% endif %}
                       </div>
 
                       <div class="row">
@@ -48,24 +48,25 @@
                         <div class="col-md-6 mb-4">
                           <div class="form-outline">
                             <input type="text" id="form3Example2" class="form-control"  name="last_name" />
-                            <label class="form-label" for="form3Example2">نام خانوادگی</label> {% if user_error %} {% endif %}
+                            <label class="form-label" for="form3Example2">نام خانوادگی</label> 
                           </div>
                         </div>
                       </div>
       
                       <div class="form-outline mb-4">
                         <input type="email" id="form3Example3" class="form-control" name="email" />
-                        <label class="form-label" for="form3Example3">آدرس ایمیل</label>{% if email_err %}INJA HTML BENEVIS{% endif %}
+                        <label class="form-label" for="form3Example3">آدرس ایمیل</label>{% if email_err %} <p>ایمیل مشکل دارد.</p> {% endif %}
+                                                                                        {% if email_rep_error %} <p>ایمیل تکراری است</p> {% endif %}
                       </div>
       
                       <div class="row">
                       <div class="col-6 form-outline mb-4">
                         <input type="password" id="form3Example4" class="form-control" name="password1" />
-                        <label class="form-label" for="form3Example4">رمز</label> {% if weak_password %}{% endif %}
+                        <label class="form-label" for="form3Example4">رمز</label> {% if weak_password %}رمز شما باید بالای ۸ کاراکتر باشد.{% endif %}
                       </div>
                       <div class="col-6 form-outline mb-4">
                         <input type="password" id="form3Example4" class="form-control" name="password2"/>
-                        <label class="form-label" for="form3Example4">تکرار رمز</label> {% if password_err %}agar oskol eshtebah zade bashe inja html benevis{% endif %}
+                        <label class="form-label" for="form3Example4">تکرار رمز</label> {% if password_error %}رمز شما با همخوانی ندارد.{% endif %}
                       </div>
                     </div>
       
@@ -83,9 +84,6 @@
       
                       <div class="text-center">
                         <p>راه های دیگر برای ثبت نام:</p>
-                        <button type="button" class="btn signup-icons btn-link btn-floating mx-1">
-                          <i class="fab fa-facebook-f"></i>
-                        </button>
       
                         <button type="button" class="btn signup-icons  btn-link btn-floating mx-1">
                           <i class="fab fa-google"></i>
