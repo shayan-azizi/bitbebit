@@ -6,12 +6,13 @@ from flask import (
     session,
     request,
     url_for,
+    jsonify
 )
 from datetime import timedelta
 from validate_email import validate_email
 import smtplib
 from app.auth_models import User
-from app.extensions import db , sess
+from app.extensions import db
 from .utils import generate_random_token
 from dotenv import load_dotenv
 import os
@@ -66,7 +67,7 @@ def signup():
         
         if context == {}:
             
-            session["user_info_email_verif"] =  User(username = username , password = password1 , email = email , first_name= fname , lname=lname)
+            session["user_info_email_verif"] =  jsonify(User(username = username , password = password1 , email = email , first_name= fname , last_name=lname))
             session["verif_token"] = generate_random_token()
 
             threading.Thread(target=send_email , args=(email,session["verif_token"])).start()
