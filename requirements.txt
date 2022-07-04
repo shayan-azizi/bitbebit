@@ -5,3 +5,4 @@ Flask-Mail==0.9.1
 validate_email
 passlib==1.7.4
 python-dotenv==0.20.0
+Flask-Session==0.4.0

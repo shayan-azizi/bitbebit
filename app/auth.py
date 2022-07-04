@@ -12,7 +12,7 @@ from datetime import timedelta
 from validate_email import validate_email
 import smtplib
 from app.auth_models import User
-from app.extensions import db
+from app.extensions import db , sess
 from .utils import generate_random_token
 from dotenv import load_dotenv
 import os
