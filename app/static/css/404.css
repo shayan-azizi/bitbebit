@@ -1,10 +1,151 @@
-.error-body { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8yOS8xMiKqq3kAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAABHklEQVRIib2Vyw6EIAxFW5idr///Qx9sfG3pLEyJ3tAwi5EmBqRo7vHawiEEERHS6x7MTMxMVv6+z3tPMUYSkfTM/R0fEaG2bbMv+Gc4nZzn+dN4HAcREa3r+hi3bcuu68jLskhVIlW073tWaYlQ9+F9IpqmSfq+fwskhdO/AwmUTJXrOuaRQNeRkOd5lq7rXmS5InmERKoER/QMvUAPlZDHcZRhGN4CSeGY+aHMqgcks5RrHv/eeh455x5KrMq2yHQdibDO6ncG/KZWL7M8xDyS1/MIO0NJqdULLS81X6/X6aR0nqBSJcPeZnlZrzN477NKURn2Nus8sjzmEII0TfMiyxUuxphVWjpJkbx0btUnshRihVv70Bv8ItXq6Asoi/ZiCbU6YgAAAABJRU5ErkJggg==);}
-.error-template {
-    padding: 40px 15px;text-align: center;
+@import url('https://v1.fontapi.ir/css/Vazir');
+
+* {
+    font-family: Vazir;
+    direction: rtl;
 }
-.error-actions {
-    margin-top:15px;margin-bottom:15px;
+
+.topnav {
+    /* margin-top: -100px; */
+    margin-left: 10px; margin-right: 10px;
+    background-color: #333;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin-bottom: 10px;
 }
-.error-actions .btn {
-    margin-right:10px;
+
+.topnav a {
+    float: right;   
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 16.5px;
+}
+
+.topnav .theme-chooser {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 16.5px;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: #0314a8;
+    color: white;
+    
+}
+/* @import url('https://fonts.googleapis.com/css?family=Nunito:400,600,700'); */
+
+
+
+
+
+
+@keyframes floating {
+    from { transform: translateY(0px); }
+    65%  { transform: translateY(15px); }
+    to   { transform: translateY(-0px); }
+}
+
+html {
+  height: 100%;
+}
+
+body{
+  background-image: url('https://assets.codepen.io/1538474/star.svg'),linear-gradient(to bottom, #05007A, #4D007D);
+  height: 100%;
+  margin: 0;
+  background-attachment: fixed;
+  overflow: hidden;
+}
+
+.mars{
+  left:0;
+  right:0;
+  bottom:0;
+  position:absolute;
+  height: 27vmin;
+  background: url('https://assets.codepen.io/1538474/mars.svg') no-repeat bottom center;
+  background-size: cover;
+}
+
+.logo-404{
+  color: red;
+  font-size: 40;
+  text-align: center;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 16vmin;
+  width: 30vmin;
+
+
+}
+
+.meteor{
+  position: absolute;
+  right: 2vmin;
+  top: 16vmin;
+}
+
+.title{
+  color: white;
+  font-family: Vazir;
+  font-weight: 600;
+  text-align: center;
+  font-size: 5vmin;
+  margin-top: 31vmin;
+
+  
+}
+
+.subtitle{
+  color: white;
+  font-family: Vazir;
+  font-weight: 400;
+  text-align: center;
+  font-size: 3.5vmin;
+  margin-top: -1vmin;
+  margin-bottom: 9vmin;
+}
+
+
+.btn-back{
+  border: 1px solid white;
+  color: white;
+  height: 5vmin;
+  padding: 12px;
+  font-family: Vazir;
+  text-decoration: none;
+	border-radius: 5px;
+
+
+}
+
+.astronaut{
+  position: absolute;
+  top: 18vmin;
+  left: 10vmin;
+  height: 30vmin;
+	animation: floating 3s infinite ease-in-out;
+
+}
+
+.spaceship{
+  position: absolute;
+  bottom: 15vmin;
+  right: 24vmin;
+
+  
 }

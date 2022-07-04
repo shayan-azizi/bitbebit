@@ -1,33 +1,29 @@
-{% extends 'base.html'%}
+% extends 'base.html' %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/404.css') }}"> 
 
+    <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/404.css') }}"> 
+    <title>بهتره</title>
 {% endblock %}
+
 
 {% block body %}
 
-<div class="error-body">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="error-template">
-                    <h1>
-                        ای بابا</h1>
-                    <h2>
-                        خطای ۴۰۴</h2>
-                    <div class="error-details">
-                        ببخشید ولی به نظر میاد صفحه ای که دنبالش هستید پیدا نشده
-                    </div>
-                    <div class="error-actions">
-                        <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
-                            من رو به خانه ام ببر </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    {% include 'navbar.html' %}
 
+    <div class="mars"></div>
+    <img src="https://assets.codepen.io/1538474/404.svg" class="logo-404" />
+    <img src="https://assets.codepen.io/1538474/meteor.svg" class="meteor" />
+    <p class="title">ای بابا!</p>
+    <p class="subtitle">
+        آقای محترم!<br />به نظر میاد شما در بعدی از فضا و زمان گم شده اید!  به سیاره اصلی خودتون برگردین!
+    </p>
+    <div align="center">
+        <a class="btn-back" href="{{ url_for('index') }}">برگشتن به صفحه اصلی</a>
+    </div>
+    <img src="https://assets.codepen.io/1538474/astronaut.svg" class="astronaut" />
+    <img src="https://assets.codepen.io/1538474/spaceship.svg" class="spaceship" />
+
+    
 
 {% endblock %}
