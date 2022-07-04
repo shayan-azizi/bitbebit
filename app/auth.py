@@ -124,4 +124,5 @@ def email_verification(): #TODO : actually write shit here
     
 @auth.route("/test")
 def test():
+    session["username"] = "kir khar"
     return f"{session.items()}" ,200
