@@ -1,4 +1,3 @@
-from pipes import Template
 from flask import (
     Blueprint,
     flash,
@@ -20,6 +19,7 @@ import threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, PackageLoader, select_autoescape
+from passlib.hash import sha256_crypt
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
@@ -59,8 +59,9 @@ def signup():
         password1 = request.form.get("password1" , False)
         password2 = request.form.get("password2" , False)
         email = request.form.get("email" , False)
-        fname = request.form.get("first_name" , False)
-        lname = request.form.get("lname" , False)
+        fname = request.form.get("first_name" , None)
+        lname = request.form.get("last_name" ,   None)
+        send_emails = True if request.form.get("send_emails" , False)=="" else False
 
         if request.form.get("email" , False):
             if not validate_email(request.form.get("email")):
@@ -83,17 +84,17 @@ def signup():
         
         if context == {}:
             
-            session["user_info_email_verif"] =  {
+            session["user_info"] =  {
                 "username" : username,
                 "password" : password1,
                 "email" : email,
-                "fname" : fname,
-                "lname" : lname,
-                "token" : generate_random_token()
+                "first_name" : fname,
+                "last_name" : lname,
+                "send_emails" : send_emails,
             }
+            session["token"] = generate_random_token()
 
-            threading.Thread(target=send_email , args=(email,session["user_info_email_verif"]["token"])).start()
-            
+            threading.Thread(target=send_email , args=(email,session["token"])).start()
             flash("ایمیل فرستادیم برات داوپش گل")
             return redirect("/email_verification")
         return render_template("signup.html" , **context)
@@ -111,7 +112,8 @@ def login():
         password = request.form.get("password" , False)
 
         user = User.query.filter_by(username = username).first()
-        if user and user.password  == password:
+        
+        if user and sha256_crypt.verify(password , user.password):
             session["user_id"] = user._id
             return redirect("/")
 
@@ -132,13 +134,13 @@ def logout():
 
 @auth.route("/email_verification" , methods = ["GET" , "POST"])
 def email_verification():
-    if session.get("user_info_email_verif" , False):
+    if session.get("user_info" , False) and session.get("token" , False):
         if request.method == "POST":
-            sess_token = session["user_info_email_verif"]["token"]
+            sess_token = session["token"]
             token = request.form.get("token" , False)
-            user_info = session["user_info_email_verif"]
+            
             if token == sess_token:
-                user_obj = User(user_info["username"] , password=user_info["password"] , email = user_info["email"] , first_name=user_info["fname"] , last_name=user_info["lname"])
+                user_obj = User(**session["user_info"])
                 db.session.add(user_obj)
                 db.session.commit()
                 session.clear()
