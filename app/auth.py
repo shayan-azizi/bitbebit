@@ -65,22 +65,22 @@ def signup():
 
         if request.form.get("email" , False):
             if not validate_email(request.form.get("email")):
-                context["email_err"] = True
+                context["invalid_email_error"] = True
             elif User.query.filter_by(email = email).first():
-                context["email_rep_error"] = True
+                context["unique_email_error"] = True
         else:
-            context["email_err"] = True
+            context["email_required_error"] = True
         if len(password1) < 8:
-            context["weak_password"] = True
+            context["weak_password_error"] = True
         elif password1 != password2:
-            context["password_error"] = True
+            context["passwords_dont_match_error"] = True
         if len(username) > 50:
-            context["username_err"] = True
+            context["username_too_long_error"] = True
         elif len(username) == 0:
-            context["username_empty_error"] = True        
+            context["username_required_error"] = True        
         else:
             if User.query.filter_by(username = username).first():
-                context["user_error"] = True
+                context["unique_username_error"] = True
         
         if context == {}:
             
