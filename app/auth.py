@@ -6,9 +6,8 @@ from flask import (
     session,
     request,
     url_for,
-    jsonify
+
 )
-from datetime import timedelta
 from validate_email import validate_email
 import smtplib
 from app.auth_models import User
@@ -17,6 +16,8 @@ from .utils import generate_random_token
 from dotenv import load_dotenv
 import os
 import threading
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
@@ -25,10 +26,18 @@ load_dotenv()
 
 def send_email(to , token : str):
 
+    message = MIMEMultipart("alternative")
+    message["subject"] = "کد تایید"
+    message["TO"] = to
+    message["FROM"] = os.getenv("GMAIL_ADDRESS")
+    HTML_BODY = MIMEText(f"<h1>{token}</h1>", 'html')
+    message.attach(HTML_BODY)
+
+
     gmail_server = smtplib.SMTP("smtp.gmail.com" , 587) 
     gmail_server.starttls()
     gmail_server.login(user=os.getenv("GMAIL_ADDRESS"),password=os.getenv("GMAIL_PASSWORD"))
-    gmail_server.sendmail(from_addr=os.getenv("GMAIL_ADDRESS"),to_addrs=to,msg="hi!")
+    gmail_server.sendmail(from_addr=os.getenv("GMAIL_ADDRESS"),to_addrs=to,msg=message.as_string())
 
 
 
@@ -37,6 +46,7 @@ def signup():
 
     if request.method == "POST":
         session.clear()
+        session.permanent = True
         context = {}
 
         username = request.form.get("username" , False)
@@ -67,10 +77,16 @@ def signup():
         
         if context == {}:
             
-            session["user_info_email_verif"] =  jsonify(User(username = username , password = password1 , email = email , first_name= fname , last_name=lname))
-            session["verif_token"] = generate_random_token()
+            session["user_info_email_verif"] =  {
+                "username" : username,
+                "password" : password1,
+                "email" : email,
+                "fname" : fname,
+                "lname" : lname,
+                "token" : generate_random_token()
+            }
 
-            threading.Thread(target=send_email , args=(email,session["verif_token"])).start()
+            threading.Thread(target=send_email , args=(email,session["user_info_email_verif"]["token"])).start()
             
             flash("ایمیل فرستادیم برات داوپش گل")
             return redirect("/email_verification")
@@ -85,7 +101,6 @@ def signup():
 def login():
     
     if request.method == "POST":
-        session.clear()
         username = request.form.get("username" , False)
         password = request.form.get("password" , False)
 
@@ -93,6 +108,9 @@ def login():
         if user and user.password  == password:
             session["user_id"] = user._id
             return redirect("/")
+
+        session.clear()
+        session.permanent = True
         flash("اطلاعات وارد شده صحت ندارد")        
         return redirect("/login")
 
@@ -103,15 +121,18 @@ def login():
 @auth.route("/logout")
 def logout():
     session.clear()
+    session.permanent = True
     return redirect("/")
 
 @auth.route("/email_verification" , methods = ["GET" , "POST"])
 def email_verification():
     if session.get("user_info_email_verif" , False):
         if request.method == "POST":
+            sess_token = session["user_info_email_verif"]["token"]
             token = request.form.get("token" , False)
-            user_obj = session.get("user_info_email_verif")
-            if token == session.get("verif_token" , False):
+            user_info = session["user_info_email_verif"]
+            if token == sess_token:
+                user_obj = User(user_info["username"] , password=user_info["password"] , email = user_info["email"] , first_name=user_info["fname"] , last_name=user_info["lname"])
                 db.session.add(user_obj)
                 db.session.commit(user_obj)
                 session.clear()
@@ -120,7 +141,7 @@ def email_verification():
             flash("کد درست نیست")
             return redirect("/email_verification")
         elif request.method == "GET":
-            return render_template("email_verficiation.html")
+            return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
 
     
@@ -130,5 +151,5 @@ def test():
 
 
 @auth.route("/loggedin")
-def loggedin():
+def loggedin():    
     return f"{session.get('user_id' , False)}"
