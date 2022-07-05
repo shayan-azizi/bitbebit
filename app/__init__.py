@@ -14,10 +14,12 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-
     app.config["SESSION_TYPE"] = "sqlalchemy"
     app.config["SESSION_SQLALCHEMY"] = db
-    app.config["PERMANENT_SESSION_LIFETIME"] = 24 * 60 * 60
+    app.config["PERMANENT_SESSION_LIFETIME"] = 10
+    app.config["SESSION_PERMANENT"] = True
+    app.config["SESSION_REFRESH_EACH_REQUEST"] = True
+
 
     app.register_blueprint(views , url_prefix = "")
     app.register_blueprint(auth , url_prefix = "")

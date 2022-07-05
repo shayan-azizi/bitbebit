@@ -1,5 +1,6 @@
 from flask import (
     Blueprint,
+    current_app,
     flash,
     redirect,
     render_template,
@@ -24,6 +25,26 @@ from passlib.hash import sha256_crypt
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
 load_dotenv()
+
+
+def is_logged_in():
+    return True if session.get("user_id" , False) else False
+
+
+@auth.before_app_request
+def handle_sessions():
+    if is_logged_in():
+        current_app.permanent_session_lifetime = 24 * 60 * 60 * 7 * 2 #2 weeks
+    else:
+        current_app.permanent_session_lifetime = 15 * 60 #15 minutes
+
+
+def login_user(user : User):
+
+    session.clear()
+    session.permanent = True
+    session["user_id"] = user._id
+    current_app.permanent_session_lifetime = 24 * 60 * 60 * 7
 
 
 def send_email(to , token : str):
@@ -114,7 +135,7 @@ def login():
         user = User.query.filter_by(username = username).first()
         
         if user and sha256_crypt.verify(password , user.password):
-            session["user_id"] = user._id
+            login_user(user=user)
             return redirect("/")
 
         session.clear()
@@ -143,9 +164,7 @@ def email_verification():
                 user_obj = User(**session["user_info"])
                 db.session.add(user_obj)
                 db.session.commit()
-                session.clear()
-                session.permanent = True
-                session["user_id"] = user_obj._id
+                login_user(user_obj)
                 return redirect("/")
             flash("کد درست نیست")
             return redirect("/email_verification")
@@ -153,12 +172,4 @@ def email_verification():
             return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
 
-    
-@auth.route("/test")
-def test():
-    return f"{session.items()}" ,200
 
-
-@auth.route("/loggedin")
-def loggedin():    
-    return f"{session.get('user_id' , False)}"
