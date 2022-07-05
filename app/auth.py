@@ -1,3 +1,4 @@
+from pipes import Template
 from flask import (
     Blueprint,
     flash,
@@ -18,6 +19,7 @@ import os
 import threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
@@ -30,7 +32,11 @@ def send_email(to , token : str):
     message["subject"] = "کد تایید"
     message["TO"] = to
     message["FROM"] = os.getenv("GMAIL_ADDRESS")
-    HTML_BODY = MIMEText(f"<h1>{token}</h1>", 'html')
+    
+    env = Environment(loader = PackageLoader("app"),autoescape=select_autoescape())
+
+    template = env.get_template("ver_email_template.html")
+    HTML_BODY = MIMEText(template.render(token = token), 'html')
     message.attach(HTML_BODY)
 
 
@@ -134,8 +140,9 @@ def email_verification():
             if token == sess_token:
                 user_obj = User(user_info["username"] , password=user_info["password"] , email = user_info["email"] , first_name=user_info["fname"] , last_name=user_info["lname"])
                 db.session.add(user_obj)
-                db.session.commit(user_obj)
+                db.session.commit()
                 session.clear()
+                session.permanent = True
                 session["user_id"] = user_obj._id
                 return redirect("/")
             flash("کد درست نیست")
