@@ -17,8 +17,8 @@ class User(db.Model):
 
         self.username = username
         self.password = sha256_crypt.hash(password)
-        self.first_name = first_name
-        self.last_name = last_name
+        self.first_name = None if first_name == "" else first_name
+        self.last_name = None if last_name == "" else last_name
         self.email = email
         self.send_emails = send_emails
 
