@@ -13,7 +13,7 @@ from validate_email import validate_email
 import smtplib
 from app.auth_models import User
 from app.extensions import db
-from .utils import generate_random_token
+from .utils import generate_random_token, has_valid_username_characters , has_valid_name
 from dotenv import load_dotenv
 import os
 import threading
@@ -84,6 +84,7 @@ def signup():
         lname = request.form.get("last_name" ,   None)
         send_emails = True if request.form.get("send_emails" , False)=="" else False
 
+        #Email Validation
         if request.form.get("email" , False):
             if not validate_email(request.form.get("email")):
                 context["invalid_email_error"] = True
@@ -91,17 +92,31 @@ def signup():
                 context["unique_email_error"] = True
         else:
             context["email_required_error"] = True
+        
+        #password Validation
         if len(password1) < 8:
             context["weak_password_error"] = True
         elif password1 != password2:
             context["passwords_dont_match_error"] = True
+        
+        #username Validation
         if len(username) > 50:
             context["username_too_long_error"] = True
         elif len(username) == 0:
             context["username_required_error"] = True        
-        else:
-            if User.query.filter_by(username = username).first():
+        elif User.query.filter_by(username = username).first():
                 context["unique_username_error"] = True
+        elif not has_valid_username_characters(username):
+            context["valid_characters_username_error"] = True
+
+        #name validation
+        if fname != "":
+            if not has_valid_name(fname):
+                context["valid_fname_error"] = True
+        if lname != "":
+            if not has_valid_name(lname):
+                context["valid_lname_error"] = True
+
         
         if context == {}:
             
