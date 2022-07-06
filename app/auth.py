@@ -131,7 +131,6 @@ def signup():
             session["token"] = generate_random_token()
 
             threading.Thread(target=send_email , args=(email,session["token"] ,session["user_info"]["username"])).start()
-            flash("ایمیل فرستادیم برات داوپش گل")
             return redirect("/email_verification")
         return render_template("signup.html" , **context)
 
@@ -176,6 +175,12 @@ def email_verification():
             token = request.form.get("token" , False)
             
             if token == sess_token:
+                if any([User.query.filter_by(email = session["user_info"]["email"]).first(),
+                        User.query.filter_by(username=session["user_info"]["username"]).first()]):
+                    session.clear()
+                    session.permanent = True
+                    flash("خیلی کند عمل کردید  اقای محترم یکی زودتر از شما با ایمیل یا یوزرنیم خودتون ثبت نام کرد")
+                    return redirect("/signup")
                 user_obj = User(**session["user_info"])
                 db.session.add(user_obj)
                 db.session.commit()
@@ -186,5 +191,4 @@ def email_verification():
         elif request.method == "GET":
             return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
-
 
