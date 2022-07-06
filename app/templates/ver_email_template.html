@@ -4,11 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <style>
+
+        @import url('https://v1.fontapi.ir/css/Vazir');
+
+        * {
+            font-family: Vazir;
+            color: white;
+        }
+
+        .container {
+            background-color: #313131;
+            padding-right: 15px;
+            padding-top: 5px; padding-bottom: 5px;
+            border-radius: 15px;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 30px;
+        }
 
     </style>
 
@@ -16,29 +32,14 @@
 </head>
 <body>
 
-    <div class="bg-dark text-center text-white mx-2 my-2"  style="border-radius: 15px;">
-        <div class="container">
-            <div class="d-flex pt-3 ">
-                <div class="col h6 mx-2">بیت به بیت بزرگترین جامعه برنامه نویسی ایران<img src="static/img/white.png"></div>
-                <!-- آقای محترم امیدوارم صبح تابستونی خوبی داشته باشین، لطفا فایل ها رو اینطوری سرچ کنید -->
-            </div>
-            <div class="mt-4">
-                سلام {{username}} 
-                 برای اطمینان از صحت ایمیل، کد رو به رو را وارد سایت کنید: {{ token }}
-        
-            </div>
-            <div>
-                <button type="submit" class="btn btn-outline-light mt-3 mb"> بازگشت به صفحه اصلی</button>
-                
-            </div>
-            <div class="mt-2"><a href="" class="pt-3 text-warning" style="text-decoration: none;">اگه نمیتونی وارد شی کلیک کن رو من!</a> </div>
-            <div class="mt-4 row justify-content-center pb-4">
-                
-                <div class="col-auto"> هیچ حقوقی محفوظ نیست! ساخته شده با قهوه:)</div>
-                <div class="col-auto text-warning">بیت به بیت</div>
-            </div>
-        </div>
-        </div>
+    <div class="container">
+        <p class="header">
+            بیت به بیت، مکانی برای برنامه نویس های سردرگم!
+        </p>
 
+        <p>سلام {{username}}</p>
+        <p>برای اطمیمنان از صحت ایمیل، این کد را در بخش مربوط وارد کنید: {{ token }}</p>
+
+    </div>
 </body>
 </html>

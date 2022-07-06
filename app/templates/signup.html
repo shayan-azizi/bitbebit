@@ -34,7 +34,11 @@
 
                       <div class="form-outline mb-4">
                         <input type="text" id="form3Example3" class="form-control" name="username" required />
-                        <label class="form-label" for="form3Example3">نام کاربری</label> {% if unique_username_error %} <p class="text-danger text-center">نام کاربری تکراری است.</p> {% endif %}
+                        <label class="form-label" for="form3Example3">نام کاربری
+                          <small>
+                            کاراکتر های قابل قبول در نام کاربری شامل: a-z, -, =, +, _, ., / هستند.
+                          </small>
+                        </label> {% if unique_username_error %} <p class="text-danger text-center">نام کاربری تکراری است.</p> {% endif %}
                                                                                          {% if username_required_error %}نام کاربری خالی است. {% endif %}
                                                                                          {% if valid_characters_username_error %} کاراکتر های یوزرنیم درست نیست {% endif %}
                       </div>
@@ -43,13 +47,17 @@
                         <div class="col-md-6 mb-4">
                           <div class="form-outline">
                             <input type="text" id="form3Example1" class="form-control" name="first_name"/>
-                            <label class="form-label" for="form3Example1">نام</label> {% if valid_fname_error %}اسم شما غلط است{% endif %}
+                            <label class="form-label" for="form3Example1">نام
+                              <small>
+                                کاراکتر های قابل قبول: الف - ی
+                              </small>
+                            </label> {% if valid_fname_error %} <p class="text-danger text-center">نام شما مشکل دارد</p> {% endif %}
                           </div>
                         </div>
                         <div class="col-md-6 mb-4">
                           <div class="form-outline">
                             <input type="text" id="form3Example2" class="form-control"  name="last_name" />
-                            <label class="form-label" for="form3Example2">نام خانوادگی</label> {% if valid_lname_error %} خانواده شما غلط است{% endif %}
+                            <label class="form-label" for="form3Example2">نام خانوادگی</label> {% if valid_lname_error %} <p class="text-danger text-center">نام خانوادگی شما مشکل دارد</p>{% endif %}
                           </div>
                         </div>
                       </div>
