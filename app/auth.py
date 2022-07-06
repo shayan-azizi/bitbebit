@@ -47,7 +47,7 @@ def login_user(user : User):
     current_app.permanent_session_lifetime = 24 * 60 * 60 * 7
 
 
-def send_email(to , token : str):
+def send_email(to , token : str , username):
 
     message = MIMEMultipart("alternative")
     message["subject"] = "کد تایید"
@@ -57,7 +57,7 @@ def send_email(to , token : str):
     env = Environment(loader = PackageLoader("app"),autoescape=select_autoescape())
 
     template = env.get_template("ver_email_template.html")
-    HTML_BODY = MIMEText(template.render(token = token), 'html')
+    HTML_BODY = MIMEText(template.render(token = token , username=username), 'html')
     message.attach(HTML_BODY)
 
 
@@ -115,7 +115,7 @@ def signup():
             }
             session["token"] = generate_random_token()
 
-            threading.Thread(target=send_email , args=(email,session["token"])).start()
+            threading.Thread(target=send_email , args=(email,session["token"] ,session["user_info"]["username"])).start()
             flash("ایمیل فرستادیم برات داوپش گل")
             return redirect("/email_verification")
         return render_template("signup.html" , **context)
