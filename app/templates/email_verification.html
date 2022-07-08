@@ -1,19 +1,34 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
-<form method="post"> <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+{% block head %}
 
-    <input type="text" name="token" id="token" value="">
+    <link rel="stylesheet" href="{{ url_for ('static' , filename = 'css/email_code_input.css') }}">
 
-    <button type="submit">
-        submit
-    </button>
-</form>
+{% endblock %}
 
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for msg in messages %}
-            {{msg}}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+{% block body %}
+
+    {% include 'navbar.html' %}
+    
+    <div class="bg-dark text-center text-white mx-2 my-2  main-container-email-code-input">
+
+        <div class="container p-3">
+
+            کد ارسال شده در ایمیل خود را در اینجا وارد کنید:
+
+            <input type="text" name="token" id="token" value=""class="form-control m-2" required />
+
+            <button class="btn btn btn-outline-light text-center" type="submit">
+                ثبت
+            </button>
+
+
+
+        </div>
+
+    </div>
+
+    {% include 'footer.html' %}
+
+{% endblock %}
