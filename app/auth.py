@@ -1,3 +1,4 @@
+from tkinter.tix import Tree
 from flask import (
     Blueprint,
     current_app,
@@ -7,13 +8,11 @@ from flask import (
     session,
     request,
     url_for,
-
 )
-from validate_email import validate_email
 import smtplib
-from app.auth_models import User
-from app.extensions import db
-from .utils import generate_random_token, has_valid_username_characters , has_valid_name
+from app.auth_models import User, NewsLetterEmails
+from app.extensions import db , oauth
+from .utils import generate_random_token
 from dotenv import load_dotenv
 import os
 import threading
@@ -21,14 +20,30 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, PackageLoader, select_autoescape
 from passlib.hash import sha256_crypt
+from app.auth_validators import *
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
 
 load_dotenv()
 
 
+#OAUTH
+
+oauth.register(
+    "github",
+    client_id = "45a4c297241e2ea0dd90",
+    client_secret = "499df85557bdf2d4bcedbc8a4b4e1a41ee56c711",
+    access_token_url = "https://github.com/login/oauth/access_token",
+    authorize_url = "https://github.com/login/oauth/authorize",
+    api_base_url = "https://api.github.com/",
+)
+
+#------SOME FUNCTIONS
+
+
 def is_logged_in():
     return True if session.get("user_id" , False) else False
+
 
 
 @auth.before_app_request
@@ -39,12 +54,18 @@ def handle_sessions():
         current_app.permanent_session_lifetime = 15 * 60 #15 minutes
 
 
+
 def login_user(user : User):
 
     session.clear()
     session.permanent = True
-    session["user_id"] = user._id
+    if user.access_token is not None:
+        session["user_id"] = user.github_id
+    else:
+        session["user_id"] = user._id
     current_app.permanent_session_lifetime = 24 * 60 * 60 * 7
+
+
 
 
 def send_email(to , token : str , username):
@@ -68,6 +89,9 @@ def send_email(to , token : str , username):
 
 
 
+
+
+#ROUTES
 @auth.route("/signup" , methods = ["GET" , "POST"])
 def signup():
 
@@ -76,49 +100,23 @@ def signup():
         session.permanent = True
         context = {}
 
-        username = request.form.get("username" , False)
-        password1 = request.form.get("password1" , False)
-        password2 = request.form.get("password2" , False)
-        email = request.form.get("email" , False)
+        username = request.form.get("username" , None)
+        password1 = request.form.get("password1" , None)
+        password2 = request.form.get("password2" , None)
+        email = request.form.get("email" , None)
         fname = request.form.get("first_name" , None)
         lname = request.form.get("last_name" ,   None)
         send_emails = True if request.form.get("send_emails" , False)=="" else False
 
-        #Email Validation
-        if request.form.get("email" , False):
-            if not validate_email(request.form.get("email")):
-                context["invalid_email_error"] = True
-            elif User.query.filter_by(email = email).first():
-                context["unique_email_error"] = True
-        else:
-            context["email_required_error"] = True
-        
-        #password Validation
-        if len(password1) < 8:
-            context["weak_password_error"] = True
-        elif password1 != password2:
-            context["passwords_dont_match_error"] = True
-        
-        #username Validation
-        if len(username) > 50:
-            context["username_too_long_error"] = True
-        elif len(username) == 0:
-            context["username_required_error"] = True        
-        elif User.query.filter_by(username = username).first():
-                context["unique_username_error"] = True
-        elif not has_valid_username_characters(username):
-            context["valid_characters_username_error"] = True
-
-        #name validation
-        if fname != "":
-            if not has_valid_name(fname):
-                context["valid_fname_error"] = True
-        if lname != "":
-            if not has_valid_name(lname):
-                context["valid_lname_error"] = True
-
+        context = email_validation(context, email)
+        context = password_validation(context, password1, password2)
+        context = username_validation(context, username)
+        context = name_validation(context, fname, lname)
         
         if context == {}:
+
+            db.session.add(NewsLetterEmails(email = email))
+            db.session.commit()
             
             session["user_info"] =  {
                 "username" : username,
@@ -138,6 +136,65 @@ def signup():
         return render_template("signup.html")
 
 
+
+
+
+@auth.route("/oauth/signup" , methods = ["GET" , "POST"])
+def oauth_signup():
+    github = oauth.create_client("github")
+    redirect_uri = url_for("auth.call_back_signup" , _external = True)
+    return github.authorize_redirect(redirect_uri)
+
+
+
+
+
+@auth.route("/callback/signup" , methods = ["GET" , "POST"])
+def call_back_signup():
+    
+    github = oauth.create_client("github")
+    token = github.authorize_access_token()
+    user_data = github.get("user" , token = token).json()
+    print(user_data)
+    email =    user_data.get("email" , False)
+    email_errors = email_validation({} , email)
+
+    if email_errors.get("email_required_error" , False):
+        print("email_required_error")
+        flash("")
+        return redirect("/signup")
+    elif email_errors.get("unique_email_error",False):
+        print("unique_email_error")
+        flash("")
+        return redirect("/signup")
+
+
+    if request.method == "POST":
+        username = request.form.get("username" , None)
+        username_errors = username_validation({}, username)
+        if username_errors != {}:
+            return render_template("username_form.html" , **username_errors)
+        
+        g_id = user_data.get("id" , None)
+        account = User(username=username, email=email, access_token=token, github_id=g_id)
+        db.session.add(account)
+        db.session.commit() #TODO find a way to store dicts in db
+        login_user(account)
+        return redirect("/")
+
+    if request.method == "GET":
+        username = user_data.get("login" , False)
+        username_errors=  username_validation({} , username)
+
+        if username_errors.get("unique_username_error", False):
+            return render_template("username_form.html")
+
+        g_id = user_data.get("id" , None)
+        account = User(username=username, email=email, access_token=token, github_id=g_id)
+        db.session.add(account)
+        db.session.commit()
+        login_user(account)
+        return redirect("/")
 
 @auth.route("/login" , methods = ["GET" , "POST"])
 def login():
@@ -167,6 +224,7 @@ def logout():
     session.permanent = True
     return redirect("/")
 
+
 @auth.route("/email_verification" , methods = ["GET" , "POST"])
 def email_verification():
     if session.get("user_info" , False) and session.get("token" , False):
@@ -192,3 +250,6 @@ def email_verification():
             return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
 
+@auth.route("/loggedin")
+def loggedin():
+    return f"{is_logged_in()}"

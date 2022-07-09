@@ -15,7 +15,7 @@ def has_valid_username_characters(username  : str):
             return False
     return True
 
-def has_valid_name(name):
+def has_valid_name_charaters(name):
     for i in name:
         if i not in VALID_FULLNAME:
             return False
