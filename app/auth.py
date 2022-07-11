@@ -247,8 +247,8 @@ def call_back():
 def login():
     
     if request.method == "POST":
-        username = request.form.get("username" , False)
-        password = request.form.get("password" , False)
+        username = request.form.get("username" , None)
+        password = request.form.get("password" , None)
 
         user = User.query.filter_by(username = username).first()
         
