@@ -113,9 +113,10 @@ def signup():
         context = name_validation(context, fname, lname)
         
         if context == {}:
+            if not NewsLetterEmails.query.filter_by(email = email).first():
 
-            db.session.add(NewsLetterEmails(email = email))
-            db.session.commit()
+                db.session.add(NewsLetterEmails(email = email))
+                db.session.commit()
             
             session["user_info"] =  {
                 "username" : username,
