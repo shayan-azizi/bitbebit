@@ -20,3 +20,8 @@ def has_valid_name_charaters(name):
         if i not in VALID_FULLNAME:
             return False
     return True
+
+def generate_access_token_for_sending(access_token):
+    k = {"token_type" : "bearer" , "scope" : ""}
+    k["access_token"] = access_token
+    return k

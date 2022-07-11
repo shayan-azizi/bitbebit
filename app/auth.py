@@ -30,8 +30,8 @@ load_dotenv()
 
 oauth.register(
     "github",
-    client_id = "45a4c297241e2ea0dd90",
-    client_secret = "499df85557bdf2d4bcedbc8a4b4e1a41ee56c711",
+    client_id = os.getenv("GITHUB_CLIENT_ID"),
+    client_secret = os.getenv("GITHUB_CLIENT_SECRET"),
     access_token_url = "https://github.com/login/oauth/access_token",
     authorize_url = "https://github.com/login/oauth/authorize",
     api_base_url = "https://api.github.com/",
@@ -50,7 +50,7 @@ def handle_sessions():
     if is_logged_in():
         current_app.permanent_session_lifetime = 24 * 60 * 60 * 7 * 2 #2 weeks
     else:
-        current_app.permanent_session_lifetime = 15 * 60 #15 minutes
+        current_app.permanent_session_lifetime = 60 * 15 #15 minutes
 
 
 
@@ -135,65 +135,107 @@ def signup():
         return render_template("signup.html")
 
 
-
-
-
 @auth.route("/oauth/signup" , methods = ["GET" , "POST"])
 def oauth_signup():
+    session["signup"] = True
     github = oauth.create_client("github")
-    redirect_uri = url_for("auth.call_back_signup" , _external = True)
+    redirect_uri = url_for("auth.call_back" , _external = True)
+    return github.authorize_redirect(redirect_uri)
+
+
+@auth.route("/oauth/login", methods = ["GET", "POST"])
+def oauth_login():
+    session["login"] = True
+    github = oauth.create_client("github")
+    redirect_uri = url_for("auth.call_back" , _external = True)
     return github.authorize_redirect(redirect_uri)
 
 
 
+@auth.route("/callback" , methods = ["GET" , "POST"])
+def call_back():
+    if session.get("signup" , False):
+        github = oauth.create_client("github")
+        token = github.authorize_access_token()
+        user_data = github.get("user" , token = token).json()
+        email =    user_data.get("email" , False)
+        email_errors = email_validation({} , email)
+
+        if email_errors.get("unique_email_error",False):
+            flash("اکانتی با ایمیل گیتهاب شما وجود دارد")
+            return redirect("/signup")
 
 
-@auth.route("/callback/signup" , methods = ["GET" , "POST"])
-def call_back_signup():
-    
-    github = oauth.create_client("github")
-    token = github.authorize_access_token()
-    user_data = github.get("user" , token = token).json()
-    print(user_data)
-    email =    user_data.get("email" , False)
-    email_errors = email_validation({} , email)
+        if request.method == "POST":
+            username = request.form.get("username" , None)
+            email = request.form.get("email" , None)
 
-    if email_errors.get("email_required_error" , False):
-        print("email_required_error")
-        flash("")
+            if session.get("fill_username", False) and username is None: return redirect("/callback")
+            else: username_errors = username_validation({}, username)
+                
+            if session.get("fill_email", False) and email is None: return redirect("/callback")
+            else: email_errors = email_validation({}, email)
+
+            
+            if username_errors != {}:
+                fill_in_form["username"] , session["fill_username"] = True , True
+                all_errors = {**username_errors}
+            
+            if email_errors != {}:
+                fill_in_form["email"], session["fill_email"] = True , True
+                all_errors = {**all_errors, **email_errors}
+            if all_errors != {}:
+                return render_template("oauth_form.html", **all_errors)
+
+            g_id = user_data.get("id" , None)
+            account = User(username=username, email=email, access_token=token["access_token"], github_id=g_id)
+            db.session.add(account)
+            db.session.commit()
+            login_user(account)
+            return redirect("/")
+
+        if request.method == "GET":
+            fill_in_form = {}
+            username = user_data.get("login" , False)
+            username_errors=  username_validation({} , username)
+
+            if username_errors.get("unique_username_error", False):
+                fill_in_form["username"] = True
+                session["fill_username"] = True
+
+            if email_errors.get("email_required_error"):
+                fill_in_form["email"] = True
+                session["fill_email"] = True
+            
+            if fill_in_form != {}:
+                return render_template("oauth_form.html" , **fill_in_form)
+
+            g_id = user_data.get("id" , None)
+            account = User(username=username, email=email, access_token=token["access_token"], github_id=g_id)
+            db.session.add(account)
+            db.session.commit()
+            login_user(account)
+            return redirect("/")
+
+
+    #------------------------------
+    if session.get("login", False):
+        github = oauth.create_client("github")
+        token = github.authorize_access_token()
+        g_id = github.get("user",token=token).json()["id"]
+        if User.query.filter_by(github_id=g_id).first():
+            account = User.query.filter_by(github_id= g_id).first()
+            account.access_token = token["access_token"]
+            db.session.commit()
+            login_user(account)
+            return redirect("/")
+        session.clear()
+        session.permanent = True
+        flash("شما اکانتی نساختید")
         return redirect("/signup")
-    elif email_errors.get("unique_email_error",False):
-        print("unique_email_error")
-        flash("")
-        return redirect("/signup")
 
 
-    if request.method == "POST":
-        username = request.form.get("username" , None)
-        username_errors = username_validation({}, username)
-        if username_errors != {}:
-            return render_template("username_form.html" , **username_errors)
-        
-        g_id = user_data.get("id" , None)
-        account = User(username=username, email=email, access_token=token, github_id=g_id)
-        db.session.add(account)
-        db.session.commit() #TODO find a way to store dicts in db
-        login_user(account)
-        return redirect("/")
 
-    if request.method == "GET":
-        username = user_data.get("login" , False)
-        username_errors=  username_validation({} , username)
-
-        if username_errors.get("unique_username_error", False):
-            return render_template("username_form.html")
-
-        g_id = user_data.get("id" , None)
-        account = User(username=username, email=email, access_token=token, github_id=g_id)
-        db.session.add(account)
-        db.session.commit()
-        login_user(account)
-        return redirect("/")
 
 @auth.route("/login" , methods = ["GET" , "POST"])
 def login():
@@ -252,3 +294,7 @@ def email_verification():
 @auth.route("/loggedin")
 def loggedin():
     return f"{is_logged_in()}"
+
+@auth.route("/test")
+def test():
+    return f"{session.items()}"
