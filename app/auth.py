@@ -1,4 +1,3 @@
-from tkinter.tix import Tree
 from flask import (
     Blueprint,
     current_app,
