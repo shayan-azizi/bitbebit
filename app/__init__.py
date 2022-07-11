@@ -1,11 +1,12 @@
 from flask import Flask
-from app.extensions import db , csrf , sess
+from app.extensions import db , csrf , sess , oauth
 from app.views import views
 from app.account import account
 from app.auth import auth
 from app.error_pages import errors
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
 
 def create_app():
@@ -17,7 +18,7 @@ def create_app():
 
     app.config["SESSION_TYPE"] = "sqlalchemy"
     app.config["SESSION_SQLALCHEMY"] = db
-    app.config["PERMANENT_SESSION_LIFETIME"] = 10
+    app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 15
     app.config["SESSION_PERMANENT"] = True
     app.config["SESSION_REFRESH_EACH_REQUEST"] = True
 
@@ -31,6 +32,7 @@ def create_app():
     db.init_app(app=app)
     csrf.init_app(app=app)
     sess.init_app(app = app)
+    oauth.init_app(app = app)
 
     with app.app_context():
         db.create_all()

@@ -14,6 +14,7 @@
     <div class="bg-dark text-center text-white mx-2 my-2  main-container-email-code-input">
 
         <div class="container p-3">
+            <form method = 'post'> <input type="hidden" name="csrf_token"  value="{{ csrf_token() }}">
 
             کد ارسال شده در ایمیل خود را در اینجا وارد کنید:
 
@@ -22,13 +23,19 @@
             <button class="btn btn btn-outline-light text-center" type="submit">
                 ثبت
             </button>
-
+            </form>
 
 
         </div>
 
     </div>
 
-    {% include 'footer.html' %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+        {{msg}}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
 {% endblock %}

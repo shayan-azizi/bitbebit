@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+
+        <form method = "post">
+
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+            {% if username %}
+                <label for="username">Username : </label>
+                <input type="text" name="username" id="username">
+            {% endif %}
+
+            {% if email %}
+                <label for="email">Email : </label>
+                <input type="text" name="email" id="email">
+            {% endif %}
+
+            <button type="submit">
+                SUBMIT
+            </button>
+        </form>
+    </body>
+</html>
