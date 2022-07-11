@@ -211,6 +211,11 @@ def call_back():
                 return render_template("oauth_form.html" , **fill_in_form)
 
             g_id = user_data.get("id" , None)
+            if User.query.filter_by(github_id = g_id).first():
+                session.clear()
+                session.permanent = True
+                flash("اکانتی با این اکانت گیتهاب وجود دارد")
+                return redirect("/signup")
             account = User(username=username, email=email, access_token=token["access_token"], github_id=g_id)
             db.session.add(account)
             db.session.commit()
