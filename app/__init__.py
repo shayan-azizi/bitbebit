@@ -1,6 +1,7 @@
 from flask import Flask
 from app.extensions import db , csrf , sess
 from app.views import views
+from app.account import account
 from app.auth import auth
 from app.error_pages import errors
 from dotenv import load_dotenv
@@ -24,6 +25,7 @@ def create_app():
     app.register_blueprint(views , url_prefix = "")
     app.register_blueprint(auth , url_prefix = "")
     app.register_blueprint(errors , url_prefix = "")
+    app.register_blueprint(account, url_prefix = "")
 
 
     db.init_app(app=app)

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/change_profile.css') }}"> 
+
+{% endblock %}
+
+
+{% block body %}
+
+    {% include 'navbar.html' %}
+
+    <div class="container rounded bg-white mt-5 mb-5" style="border-radius: 15px;">
+        <div class="row">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="data:image/jpeg;base64,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"><span class="font-weight-bold my-3">شایان عزیزی</span><span class="text-black-50">shayanazizi1386@gmail.com</span><span> </span></div>
+            </div>
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">تنظیمات پروفایل</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">نام</label><input type="text" class="form-control" placeholder="بهرام" value=""></div>
+                        <div class="col-md-6"><label class="labels">نام خانوادگی</label><input type="text" class="form-control" value="" placeholder="اموی"></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">شماره موبایل</label><input type="text" class="form-control" placeholder="۰۹۱۲۴۵۳۸۹۱۷" value=""></div>
+                        <div class="col-md-12"><label class="labels">آدرس</label><input type="text" class="form-control" placeholder="تهران خیابان آزادی جنب دانشگاه شریف" value=""></div>
+                        <div class="col-md-12"><label class="labels">کد پستی</label><input type="text" class="form-control" placeholder="1439839427" value=""></div>
+                        <div class="col-md-12"><label class="labels">استان</label><input type="text" class="form-control" placeholder="فارس" value=""></div>
+                        <div class="col-md-12"><label class="labels">شهر</label><input type="text" class="form-control" placeholder="شیراز" value=""></div>
+                        <div class="col-md-12"><label class="labels">آدرس ایمیل</label><input type="text" class="form-control" placeholder="test@test.com" value=""></div>
+                        <div class="col-md-12"><label class="labels">تحصیلات</label><input type="text" class="form-control" placeholder="کارشناسی ارشد" value=""></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><label class="labels">خر</label><input type="text" class="form-control" placeholder="بردیا امیریان" value=""></div>
+                        <div class="col-md-6"><label class="labels">اصلیت</label><input type="text" class="form-control" value="" placeholder="کرد"></div>
+                    </div>
+                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">ثبت تغییرات بر روی پروفایل</button></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center experience"><span>تغییر تجربیات</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;افزودن تجربه</span></div><br>
+                    <div class="col-md-12"><label class="labels">تجربیات در طراحی</label><input type="text" class="form-control" placeholder="۲ سال سابقه کار در شرکت دیجیتال پینت" value=""></div> <br>
+                    <div class="col-md-12"><label class="labels">تجربیات در برنامه نویسی</label><input type="text" class="form-control" placeholder="سابقه انجام پروژه بلاگ" value=""></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+{% endblock %}
+
+
