@@ -16,3 +16,6 @@ account = Blueprint("account" , __name__ , template_folder="templates" , static_
 def change_profile ():
     return render_template("change_profile.html")
 
+@account.route("/profile")
+def profile ():
+    return render_template("profile.html")
