@@ -116,6 +116,24 @@
           </div>
         </div>
       </section>
+
+
+      <h1>
+        {% with messages=get_flashed_messages() %}
+
+          {% if messages %}
+            {% for msg in messages %}
+
+                    {{msg}}
+
+            {% endfor %}
+
+          {% endif %}
+
+        {%endwith%}
+
+      </h1>
+
       {% include 'footer.html' %}
 
 

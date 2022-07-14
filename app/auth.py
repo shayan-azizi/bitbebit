@@ -43,14 +43,20 @@ oauth.register(
 def is_logged_in():
     return True if session.get("user_id" , False) else False
 
-
+def clear_session():
+    session.clear()
+    session.permanent = True
 
 @auth.before_app_request
 def handle_sessions():
+
     if is_logged_in():
+
         current_app.permanent_session_lifetime = 24 * 60 * 60 * 7 * 2 #2 weeks
     else:
+                
         current_app.permanent_session_lifetime = 60 * 15 #15 minutes
+
 
 
 
@@ -95,8 +101,7 @@ def send_email(to , token : str , username):
 def signup():
 
     if request.method == "POST":
-        session.clear()
-        session.permanent = True
+        clear_session()
         context = {}
 
         username = request.form.get("username" , None)
@@ -213,8 +218,7 @@ def call_back():
 
             g_id = user_data.get("id" , None)
             if User.query.filter_by(github_id = g_id).first():
-                session.clear()
-                session.permanent = True
+                clear_session()
                 flash("اکانتی با این اکانت گیتهاب وجود دارد")
                 return redirect("/signup")
             account = User(username=username, email=email, access_token=token["access_token"], github_id=g_id)
@@ -222,6 +226,16 @@ def call_back():
             db.session.commit()
             login_user(account)
             return redirect("/")
+
+
+
+
+
+
+
+
+
+
 
 
     #------------------------------
@@ -235,8 +249,7 @@ def call_back():
             db.session.commit()
             login_user(account)
             return redirect("/")
-        session.clear()
-        session.permanent = True
+        clear_session()
         flash("شما اکانتی نساختید")
         return redirect("/signup")
 
@@ -256,8 +269,7 @@ def login():
             login_user(user=user)
             return redirect("/")
 
-        session.clear()
-        session.permanent = True
+        clear_session()
         flash("اطلاعات وارد شده صحت ندارد")        
         return redirect("/login")
 
@@ -267,8 +279,7 @@ def login():
 
 @auth.route("/logout")
 def logout():
-    session.clear()
-    session.permanent = True
+    clear_session()
     return redirect("/")
 
 
@@ -282,8 +293,7 @@ def email_verification():
             if token == sess_token:
                 if any([User.query.filter_by(email = session["user_info"]["email"]).first(),
                         User.query.filter_by(username=session["user_info"]["username"]).first()]):
-                    session.clear()
-                    session.permanent = True
+                    clear_session()
                     flash("خیلی کند عمل کردید  اقای محترم یکی زودتر از شما با ایمیل یا یوزرنیم خودتون ثبت نام کرد")
                     return redirect("/signup")
                 user_obj = User(**session["user_info"])
@@ -291,8 +301,9 @@ def email_verification():
                 db.session.commit()
                 login_user(user_obj)
                 return redirect("/")
+            clear_session()
             flash("کد درست نیست")
-            return redirect("/email_verification")
+            return redirect("/signup")
         elif request.method == "GET":
             return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
