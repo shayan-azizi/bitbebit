@@ -113,7 +113,7 @@ def signup():
         context = name_validation(context, fname, lname)
         
         if context == {}:
-            if not NewsLetterEmails.query.filter_by(email = email).first():
+            if not NewsLetterEmails.query.filter_by(email = email).first() and send_emails == True:
 
                 db.session.add(NewsLetterEmails(email = email))
                 db.session.commit()
@@ -124,7 +124,6 @@ def signup():
                 "email" : email,
                 "first_name" : fname,
                 "last_name" : lname,
-                "send_emails" : send_emails,
             }
             session["token"] = generate_random_token()
 

@@ -9,14 +9,12 @@ class User(db.Model):
     password = db.Column(db.String(100) , nullable = True)
     first_name = db.Column(db.String(50) , nullable = True)
     last_name = db.Column(db.String(50) , nullable = True)
-
-    send_emails = db.Column(db.Boolean , nullable = False , default = False)
     
     access_token = db.Column(db.String(500) , nullable = True)
     github_id = db.Column(db.String(500) , nullable = True)
 
 
-    def __init__(self , username ,email,  password = None , first_name=None , last_name=None , send_emails = False , access_token = None, github_id = None):
+    def __init__(self , username ,email,  password = None , first_name=None , last_name=None ,  access_token = None, github_id = None):
 
         self.username = username
         if password is not None:
@@ -26,7 +24,6 @@ class User(db.Model):
         self.first_name = None if first_name == "" else first_name
         self.last_name = None if last_name == "" else last_name
         self.email = email
-        self.send_emails = send_emails
         self.access_token = access_token
         self.github_id = github_id
 
