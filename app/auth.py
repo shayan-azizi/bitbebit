@@ -19,7 +19,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, PackageLoader, select_autoescape
 from passlib.hash import sha256_crypt
-from app.auth_validators import *
+from app.auth_validators import UserDataValidation
 from random import randint
 
 auth = Blueprint("auth" , __name__ , template_folder="templates" , static_folder="static")
@@ -37,6 +37,8 @@ oauth.register(
     authorize_url = "https://github.com/login/oauth/authorize",
     api_base_url = "https://api.github.com/",
 )
+
+validation = UserDataValidation()
 
 #------SOME FUNCTIONS
 
@@ -106,11 +108,11 @@ def signup():
         fname = request.form.get("first_name" , None)
         lname = request.form.get("last_name" ,   None)
         send_emails = True if request.form.get("send_emails" , False)=="" else False
-
-        context = email_validation(context, email)
-        context = password_validation(context, password1, password2)
-        context = username_validation(context, username)
-        context = name_validation(context, fname, lname)
+        
+        context = validation.email_validation(context, email)
+        context = validation.password_validation(context, password1, password2)
+        context = validation.username_validation(context, username)
+        context = validation.name_validation(context, fname, lname)
         
         if context == {}:
             if not NewsLetterEmails.query.filter_by(email = email).first() and send_emails == True:
@@ -164,8 +166,8 @@ def call_back():
         user_data = github.get("user" , token = token).json()
         email =    user_data.get("email" , False)
         username = user_data.get("login" , False)
-        email_errors = email_validation({} , email)
-        username_errors=  username_validation({} , username)
+        email_errors = validation.email_validation({} , email)
+        username_errors=  validation.username_validation({} , username)
 
         if email_errors != {}:
             email = None
