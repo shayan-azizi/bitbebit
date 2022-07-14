@@ -5,7 +5,7 @@ class User(db.Model):
     _id = db.Column(db.Integer , nullable = False , primary_key = True)
 
     username = db.Column(db.String(50) , nullable = False , unique = True)
-    email = db.Column(db.String(1000) , nullable = False   , unique = True)
+    email = db.Column(db.String(1000) , nullable = True   , unique = True)
     password = db.Column(db.String(100) , nullable = True)
     first_name = db.Column(db.String(50) , nullable = True)
     last_name = db.Column(db.String(50) , nullable = True)
@@ -14,7 +14,6 @@ class User(db.Model):
     
     access_token = db.Column(db.String(500) , nullable = True)
     github_id = db.Column(db.String(500) , nullable = True)
-
 
 
     def __init__(self , username ,email,  password = None , first_name=None , last_name=None , send_emails = False , access_token = None, github_id = None):
@@ -33,6 +32,12 @@ class User(db.Model):
 
     def __repr__(self):
         return f"{self._id} : {self.username} : {self.email}"
+
+    def generate_access_token_for_sending(self):
+        k = {"token_type" : "bearer" , "scope" : ""}
+        k["access_token"] = self.access_token
+        return k
+
 
 class NewsLetterEmails(db.Model):
 
