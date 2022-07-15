@@ -6,7 +6,7 @@ def generate_random_token() -> str:
         token += str(randint(0,9))
     return token
 
-VALID_USERNAME = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;="
+VALID_USERNAME = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:?#[]@!$&'()*+,;="
 VALID_FULLNAME =  "ابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی"
 
 def has_valid_username_characters(username  : str):
