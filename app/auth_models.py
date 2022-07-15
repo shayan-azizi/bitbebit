@@ -1,4 +1,4 @@
-from app.extensions import db
+from app.extensions import db, oauth
 from passlib.hash import sha256_crypt
 
 class User(db.Model):
@@ -34,6 +34,18 @@ class User(db.Model):
         k = {"token_type" : "bearer" , "scope" : ""}
         k["access_token"] = self.access_token
         return k
+
+    def get_full_name(self):
+        if self.first_name == None and self.last_name == None:
+            return None
+        return "" if self.first_name == None else self.first_name + "" if self.last_name == None else self.last_name
+
+    def get_github_profile_url(self):
+        github = oauth.create_client("github")
+        user_data = github.get("user", token = self.generate_access_token_for_sending()).json()
+        username =  user_data.get("login")
+        return f"https://github.com/{username}"
+
 
 
 class NewsLetterEmails(db.Model):

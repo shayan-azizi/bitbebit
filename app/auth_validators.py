@@ -4,7 +4,7 @@ from app.utils import has_valid_username_characters,has_valid_name_charaters
 
 
 class UserDataValidation:
-
+    
     def email_validation(self,context : dict , email : str) -> dict:
         if email=="" or email is None:
             context["email_required_error"] = True
@@ -45,5 +45,3 @@ class UserDataValidation:
                 if not has_valid_name_charaters(lname):
                     context["valid_lname_error"] = True
         return context
-
-
