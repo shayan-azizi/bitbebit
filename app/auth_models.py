@@ -12,6 +12,7 @@ class User(db.Model):
     
     access_token = db.Column(db.String(500) , nullable = True)
     github_id = db.Column(db.String(500) , nullable = True)
+    github_url = db.Column(db.String(50),nullable = True)
 
 
     def __init__(self , username ,email,  password = None , first_name=None , last_name=None ,  access_token = None, github_id = None):
@@ -26,6 +27,9 @@ class User(db.Model):
         self.email = email
         self.access_token = access_token
         self.github_id = github_id
+        
+        if self.github_id:
+            self.github_url = self.get_github_profile_url()
 
     def __repr__(self):
         return f"{self._id} : {self.username} : {self.email}"
