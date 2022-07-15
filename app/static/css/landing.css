@@ -5,14 +5,16 @@
 }
 
 
-.banner {
+/* .banner {
     position: relative;
     height: 100vh;
     overflow: hidden;
-}
+} */
 
 body {
     background-color: #111827;
+    overflow: hidden;
+
 }
 
 nav {
