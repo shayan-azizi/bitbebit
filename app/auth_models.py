@@ -1,4 +1,4 @@
-from app.extensions import db
+from app.extensions import db, oauth
 from passlib.hash import sha256_crypt
 
 class User(db.Model):
@@ -12,6 +12,7 @@ class User(db.Model):
     
     access_token = db.Column(db.String(500) , nullable = True)
     github_id = db.Column(db.String(500) , nullable = True)
+    github_url = db.Column(db.String(50),nullable = True)
 
 
     def __init__(self , username ,email,  password = None , first_name=None , last_name=None ,  access_token = None, github_id = None):
@@ -26,6 +27,9 @@ class User(db.Model):
         self.email = email
         self.access_token = access_token
         self.github_id = github_id
+        
+        if self.github_id:
+            self.github_url = self.get_github_profile_url()
 
     def __repr__(self):
         return f"{self._id} : {self.username} : {self.email}"
@@ -34,6 +38,18 @@ class User(db.Model):
         k = {"token_type" : "bearer" , "scope" : ""}
         k["access_token"] = self.access_token
         return k
+
+    def get_full_name(self):
+        if self.first_name == None and self.last_name == None:
+            return None
+        return "" if self.first_name == None else self.first_name + "" if self.last_name == None else self.last_name
+
+    def get_github_profile_url(self):
+        github = oauth.create_client("github")
+        user_data = github.get("user", token = self.generate_access_token_for_sending()).json()
+        username =  user_data.get("login")
+        return f"https://github.com/{username}"
+
 
 
 class NewsLetterEmails(db.Model):
