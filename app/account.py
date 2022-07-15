@@ -4,6 +4,7 @@ from flask import (
     abort
 
 )
+from app import question
 from app.auth_models import User
 
 account = Blueprint("account" , __name__ , template_folder="templates" , static_folder="static")
@@ -22,5 +23,7 @@ def profile (username):
         return render_template("profile.html",user=user)
     abort(404)
 
-
+@account.route("/question/ask")
+def ask_question ():
+    return render_template("ask_question.html")
 

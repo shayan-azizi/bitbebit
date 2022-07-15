@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+  <link rel="stylesheet" href="{{ url_for('static' , filename = 'css/ask_question.css') }}"> 
+
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html' %}
+
+        <h1 class="my-4 mx-5">
+            یه سوال عمومی بپرس!
+        </h1>
+
+        <div class="card card-ask my-4 mx-5 px-4 py-4" >
+            
+            <h5>
+                <label for = "title-input" class="form-label input-labels">
+                    تیتر
+                </label> <br>
+                <p class="small-danger">به صورت مشخص و خلاصه منظور خود را بیان کنید.</p>
+            </h5>
+
+            <input type="text" name="" class="form-control" id="title-input" placeholder="برای مثال: چگونه در پایتون کتابخانه pyinstaller را نصب کنم؟">
+
+
+            <h5>
+                <label for="content-input" class="form-label form-label-for" >
+                    متن
+                </label>
+                <p class="small-danger"> <br>
+                    تمامی اطلاعات مورد نیاز در سوال و یا مسئله خود را وارد کنید.
+                </p>
+            </h5>
+
+            <textarea name="" class="form-control my-3"  id="" cols="30" rows="10"></textarea>
+
+            <button class="btn btn-primary">
+                ثبت سوال
+            </button>
+        </div>
+
+    {% include 'footer.html' %}
+
+{% endblock %}
