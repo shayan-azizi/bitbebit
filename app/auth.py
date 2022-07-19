@@ -7,9 +7,10 @@ from flask import (
     session,
     request,
     url_for,
+    abort
 )
 import smtplib
-from app.auth_models import User, NewsLetterEmails
+from app.auth_models import User, NewsLetterEmails , ResetPasswordToken
 from app.extensions import db , oauth
 from .utils import generate_random_token, VALID_USERNAME
 from dotenv import load_dotenv
@@ -255,6 +256,64 @@ def email_verification():
             return render_template("email_verification.html")
     return redirect(url_for("auth.signup"))
 
+
+
+@auth.route("/forgot")
+def forgot():
+    
+    if request.method == "POST":
+
+        email = request.form.get("email" , None)
+        user_obj = User.query.filter_by(email = email).first()
+        if user_obj:
+            session["email"] = email
+            token = ResetPasswordToken.query.filter_by(user_id = user_obj._id).first()
+            if token:
+                db.session.delete(token)
+                db.session.commit()
+            
+            token = ResetPasswordToken(user = user_obj)
+
+
+            flash("ایمیل را فرستادیم")
+            return redirect("/forgot")
+
+        flash("همچین ایمیلی وجود ندارد")
+        return redirect("/forgot")
+
+
+    if request.method == "GET":
+        return render_template("forgot.html")
+
+@auth.route("/reset-password/<uuid>")
+def reset_password(uuid):
+
+    email = session.get("email" , False)
+    token = ResetPasswordToken.query.filter_by(uuid = uuid).first()
+
+    if not token:
+        abort(404)
+
+    if token.is_expired():
+        db.session.delete(token)
+        db.session.commit()
+        abort(404)
+
+    if not email:
+        abort(404)
+    
+    if request.method == "GET":
+        return render_template("reset-password.html")
+
+    if request.method == "POST":
+        user_obj = User.query.filter_by(email = email).first()
+        p1 = request.form.get("password1")
+        p2 = request.form.get("password2")
+        password_errors = UserDataValidation.password_validation({} , p1 , p2)
+        return render_template("reset-password.html" , **password_errors)
+
+
+        
 @auth.route("/loggedin")
 def loggedin():
     return f"{is_logged_in()}"

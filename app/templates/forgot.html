@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+
+<html>
+    <head>
+        <title>
+            FORGOR PASSWORD
+        </title>
+    </head>
+
+    
+
+    <body>
+        <form method="post">
+            <input type="hidden" value="{{ csrf_token() }}" id="csrf_token" name="csrf_token">
+            <input type="text" name="email" id="email" value="">
+            <button type="submit">
+                SUBMIT
+            </button>
+        </form>
+    </body>
+</html>

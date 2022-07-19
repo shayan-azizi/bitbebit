@@ -1,5 +1,12 @@
 from app.extensions import db, oauth
 from passlib.hash import sha256_crypt
+from uuid import uuid4
+from datetime import datetime
+
+
+def generate_uuid():
+    return str(uuid4())
+
 
 class User(db.Model):
     _id = db.Column(db.Integer , nullable = False , primary_key = True)
@@ -62,3 +69,23 @@ class NewsLetterEmails(db.Model):
 
     def __repr__(self):
         return self.email
+
+
+class ResetPasswordToken(db.Model):
+
+    _id = db.Column(db.Integer , primary_key = True )
+    uuid = db.Column( db.Text , unique = True , default = generate_uuid )
+    expiry = db.Column(db.DateTime , nullable = False ,default = datetime.utcnow())
+    user_id = db.Column(db.Integer , db.ForeignKey("user._id") , nullable = False)
+    user = db.relationship("User")
+
+
+    def __init__(self , user ):
+        self.user = user
+
+    def is_expired(self) -> bool:
+        diff = datetime.utcnow() - self.expiry
+        return diff.seconds  > 30 * 60 # 30 minutes
+
+    def __repr__(self):
+        return self.user_id
