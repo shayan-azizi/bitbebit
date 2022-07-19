@@ -24,6 +24,23 @@
                   یا مثلا تا حالا شده که بخوای نظر یه برنامه نویس دیگه رو هم راجب کار های خودت بدونی؟
                   اینجا جایی که میتونی به همه این خواسته هات برسی!
                 </p>
+
+                <h1 class="text-danger">
+                  {% with messages=get_flashed_messages() %}
+          
+                    {% if messages %}
+                      {% for msg in messages %}
+          
+                              {{msg}}
+          
+                      {% endfor %}
+          
+                    {% endif %}
+          
+                  {%endwith%}
+          
+                </h1>
+          
               </div>
       
               <div class="col-lg-6 mb-5 mb-lg-0">
@@ -117,21 +134,6 @@
       </section>
 
 
-      <h1>
-        {% with messages=get_flashed_messages() %}
-
-          {% if messages %}
-            {% for msg in messages %}
-
-                    {{msg}}
-
-            {% endfor %}
-
-          {% endif %}
-
-        {%endwith%}
-
-      </h1>
 
 
 

@@ -13,25 +13,122 @@
     
 
     <main>
-        <div class="bg-dark text-center text-white mx-2 my-2  main-container-email-code-input">
+        <div class="bg-dark text-center text-white mx-2 my-2 main-container-email-code-input">
 
             <div class="container p-3">
-                <form method = 'post'> <input type="hidden" name="csrf_token"  value="{{ csrf_token() }}">
 
-                کد ارسال شده در ایمیل خود را در اینجا وارد کنید:
+                <div class="row align-items-center">
+            
+                    <form method = 'post'> <input type="hidden" name="csrf_token"  value="{{ csrf_token() }}">
 
-                <input type="text" name="token" id="token" value=""class="form-control m-2" required />
+                    کد ارسال شده در ایمیل خود را در اینجا وارد کنید:
 
-                <button class="btn btn btn-outline-light text-center" type="submit">
-                    ثبت
-                </button>
-                </form>
+                    <input type="text" name="token" id="token" value=""class="form-control m-2" required />
+
+                    <button class="btn btn btn-outline-light text-center" type="submit">
+                        ثبت
+                    </button>
+                    </form>
+
+                </div>
 
 
             </div>
 
         </div>
     </main>
+
+
+<footer class="bg-dark text-center fixed-bottom text-white"  style="border-radius: 0px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+  
+    <div class="container p-4">
+      
+
+        <section class="mb-4 row justify-content-center">
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+  
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-twitter"></i>
+        </a>
+  
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-google"></i>
+        </a>
+  
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-instagram"></i>
+        </a>
+  
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-linkedin-in"></i>
+        </a>
+  
+
+        <a class="col-auto btn btn-outline-light btn-floating m-1" href="#!" role="button">
+            <i class="fab fa-github"></i>
+        </a>
+      </section>
+
+      
+
+      <section class="">
+        <form action="">
+
+            <div class="row justify-content-center">
+
+            <div class="col-auto">
+              <p class="pt-2">
+                <strong>اشتراک در سرویس ایمیل</strong>
+              </p>
+            </div>
+
+            
+
+            <div class="col-md-5 col-12">
+
+                <div class="form-outline form-white mb-4">
+                <input type="email" id="elaki" class="form-control" placeholder="آدرس ایمیل" style="text-align: right;"/>
+
+              </div>
+            </div>
+
+            
+
+            <div class="col-auto">
+
+                <button type="submit" class="btn btn-outline-light mb-4">
+                ثبت نام
+              </button>
+            </div>
+
+        </div>
+
+        </form>
+      </section>
+
+      
+
+      <section class="mb-4">
+        <p>
+          بیت به بیت فقط یه انجمن فارسی برای برنامه نویس ها نیست! مکانیست برای گفتگو و جمع شدن تمام جامعه برنامه نویسی ایران. توی بیت به بیت شما میتونید هر وقت که بخواین مشکلات برنامه نویسیتون رو در بین بقیه برنامه نویس ها مطرح کنید و از پاس اون ها بهره مند بشین!
+        </p>
+      </section>
+
+      
+
+      
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2); border-radius: 15px;">
+      هیچ حقوقی محفوظ نیست! ساخته شده با قهوه :)
+      <a class="text-warning" href="/" style="text-decoration: none;">بیت به بیت</a>
+    </div>
+  </footer>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
