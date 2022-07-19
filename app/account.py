@@ -4,7 +4,6 @@ from flask import (
     abort
 
 )
-from app import question
 from app.auth_models import User
 
 account = Blueprint("account" , __name__ , template_folder="templates" , static_folder="static")
